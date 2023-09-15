@@ -1,0 +1,49 @@
+# application.yml
+# application.properties
+
+# 하는 일
+# 스프링의 기본 환경 설정들을 관리하는 역할
+# yml vs properties
+# server.port 를 변경할 때
+# yml은 뎁스의 형식으로 되어있음
+# 뎁스 => depth (깊이)
+
+# port web 80 생략가능
+# 모든 html로 보여지게끔 되어있는데 메인화면의 경우 index.html이라면 생략가능하다
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hwamok
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+      # ddl-auto => jpa의 DDL 전략 = Data Definition Language
+      # DDL => CREATE, DROP, ALTER
+      # create => 계속 새로 만들기
+      # create-drop => 새로 만들고 작업(서버가 올라갔다가 내려갈때)이 끝날 때 지우기
+      # update => 데이터베이스 테이블과 entity를 비교해서 만들고 변경점이 있으면 적용하기 (ALTER)
+      # validate => 데이터베이스 테이블과 entity를 비교하기 똑같지 않으면 서버가 꺼짐
+      # none => 아무것도 하지 않기
+    properties:
+      hibernate:
+        format_sql: true #이쁘게 formatting해서 콘솔에 출력
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        # dialect (방언)
+        # mysql => 시퀀스처럼 자동으로 증가하는 값을 쓸때 AutoIncrement
+        # postgresql => nextval(seq_user_number)
+        # oracle = > nextval(seq_user_number)
+        # mysql, mariadb, oracle, nosql, postgresql, mssql..
+    show-sql: true # 콘솔에 sql 찍을거냐 말꺼냐
+
+  thymeleaf:
+    cache: false
+    # A라는 데이터를 1초에 1번씩 씁니다(그다지 중요치 않음)
+    # A라는 데이터 요청함 > 서버에서 있는지 봄 > 있으면 가져다가 보여줌 (비용이 크다)
+    # thymeleaf에서 캐시를 해둠(A데이터의 복사본을 떠둠)
+    # A라는 데이터 요청 > 캐시해둔걸 줌
+    # 캐시가 언제 갱신되느냐 이거는 아무도 모름
+    # A라는 데이터를 수정을 함
+    # 반영이 안댔음 -> 새로고침 오지게 해야함
