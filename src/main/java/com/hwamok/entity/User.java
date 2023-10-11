@@ -4,6 +4,10 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+// Unique = 하나밖에 없는, 유일한
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uq_email", columnNames = "email")
+})
 public class User {
   // DB 예약어 == 특정 단어는 DB에서 사용되니까 테이블이름으로 사용하지마
 
@@ -37,11 +41,19 @@ public class User {
   private String name;
   private String email;
   private String password;
+  private String originalName;
+  private String savedName;
+
+  protected User() {}
 
   public User(String name, String email, String password) {
     this.name = name;
     this.email = email;
     this.password = password;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public String getName() {
@@ -54,5 +66,14 @@ public class User {
 
   public String getPassword() {
     return password;
+  }
+
+
+  public void changeName(String name) {
+    this.name = name;
+  }
+
+  public void changePassword(String password) {
+    this.password = password;
   }
 }

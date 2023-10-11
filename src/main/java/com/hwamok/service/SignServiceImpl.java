@@ -7,6 +7,8 @@ import com.hwamok.repository.SignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SignServiceImpl implements SignService {
   // 이렇게 하는건 관례 에요.
@@ -35,6 +37,42 @@ public class SignServiceImpl implements SignService {
 
   @Override
   public void signUp(UserCreateDTO dto) {
+    if(dto.getEmail().isBlank()) {
+      throw new RuntimeException("invalidate email");
+    }
+
+    if(dto.getName().isBlank()) {
+      throw new RuntimeException("invalidate name");
+    }
+
+    if(dto.getPassword().isBlank()) {
+      throw new RuntimeException("invalidate password");
+    }
+
     signRepository.save(new User(dto.getName(), dto.getEmail(), dto.getPassword()));
+  }
+
+  @Override
+  public User signIn(String email, String password) {
+
+    User user = signRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Not Found User"));
+
+    if(!password.equals(user.getPassword())) {
+      throw new RuntimeException("Password Not Match");
+    }
+    // 비지니스 로직을 처리하는 곳
+    // 비밀번호 검증해야함 <-- 비지니스 로직
+
+    // optional =  null or not null
+    // 실무에서는 optional뒤에 메소드 체이닝으로 orElseThrow => null이면 Throw한다(Exception)
+    // orElseThrow는 람다식을 통해서 제가 익셉션을 지정할 수 있음
+    // 람다식 어케 씀??
+    // 람다식 기본 형태는 () -> {}
+    // 파라미터가 1개 있을 땐 param -> {}
+    // 파라미터가 2개이상 (param1, param2) -> {}
+    // {}는 구현부 인데 한줄일때는 {} 생략 가능
+    // {}는 두줄일때부터 생략 불가
+
+    return user;
   }
 }

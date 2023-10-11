@@ -1,0 +1,112 @@
+<html lang="ko" layout:decorate="layout/basic" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--  Body Wrapper -->
+<div class="container-fluid" layout:fragment="content">
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline" action="/notice" method="get">
+            <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </nav>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+        </tr>
+        </thead>
+        <tbody id="list">
+        <!--<tr th:each="notice : ${notices}"> &lt;!&ndash; 줄 의미 타임리프에서 반복문은 내가 시작하고자 하는 부분에서 시작 &ndash;&gt;
+            &lt;!&ndash;
+                th:each="key(notice):모델에 담긴 키값(notices)"
+                notices[] = [notice1, notice2, notice3]
+                notice[0]
+                notice.get(2)
+            &ndash;&gt;
+            <td th:text="${notice.id}">1</td>
+            <td th:text="${notice.title}">Mark</td> &lt;!&ndash; 칸 &ndash;&gt;
+            <td th:text="${notice.userId}">Otto</td>
+        </tr>-->
+        </tbody>
+    </table>
+
+    <!-- 페이징 공통 라이브러리로 만들어서 호출만 하는 방식
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:if="${currentPage > 1}">
+                <a class="page-link" href="/notice" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+                class="page-item" th:classappend="${pageNumber + 1 == currentPage ? 'active' : ''}">
+                <a class="page-link" th:href="@{/notice(curPage=${pageNumber + 1 })}" th:text="${pageNumber + 1}">1</a>
+            </li>
+            <li class="page-item" th:if="${currentPage != totalPages}">
+                <a class="page-link" aria-label="Next" th:href="@{/notice(curPage=${totalPages})}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>-->
+    <div id="pageNav"></div>
+</div>
+</html>
+<script>
+
+    $(document).ready(function () {
+        search();
+    });
+
+
+    function search(curPage) {
+        $.ajax({
+            type: "GET",
+            url: "/notices",
+            success: function (response) {
+                console.log(response);
+                let html = '';
+                response.content.forEach(notice => {
+                    html += "<tr>";
+                    html += `<td>${notice.id}</td>`;
+                    html += `<td>${notice.title}</td>`;
+                    html += `<td>${notice.userId}</td>`;
+                    html += "</tr>";
+                });
+                $("#list").append(html);
+                $("#pageNav").paging({
+                    pageSize: response.numberOfElements,
+                    currentPage: curPage, //내가 클릭한 숫자,
+                    pageTotal: response.totalElements
+                });
+            },
+            error: function (error) {
+                console.error("error : ", error);
+            }
+        });
+    }
+
+    function goPage(curPage) {
+        search(curPage);
+    }
+</script>
+<!--
+    동기 방식
+    요청이발생하면 응답을 무조건 기다림
+    1번 요청 , 2번 요청 연달아 발생했을 때 1번 응답, 2번 응답순으로 기다림
+    화면 깜빡임 발생
+    정적리소스파일(html, css, image..) -> 리로딩 -> 새로고침
+
+    비동기 방식
+    요청이 발생하면 응답을 기다리지 않음
+    화면 깜빡임이 발생 x
+    모든파일들이 리로딩 되는 것이 아니라 필요한 부분만 리렌더링
+
+    비동기 요청을 보낼 수 있어야하는데
+    ES6(js) - fetch
+    jquery - ajax
+    react, vue.js - axios
+
+    리스트 조회, 페이징 처리, 검색
+    javascript 에서 처리
+-->
