@@ -1,5 +1,6 @@
 (function ($) {
     $.fn.paging = function (options) {
+
         let curThis = this;
         let defaults = {
             pageSize: 2, //한 페이지 당 몇개
