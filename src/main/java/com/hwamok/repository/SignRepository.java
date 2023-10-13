@@ -34,5 +34,9 @@ public interface SignRepository extends JpaRepository<User, Long> {
 
 
   // SELECT * FROM User WHERE User.email = ?
+
+  // public void test() { .. }
+  // AccessModifier ReturnType FunctionName(parameter) { code.. return Return}
+
   Optional<User> findByEmail(String email);
 }

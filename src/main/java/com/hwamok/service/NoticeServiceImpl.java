@@ -40,13 +40,8 @@ public class NoticeServiceImpl implements NoticeService {
     // 키워드가 없을 때는 전부 다 가져오면댐
 
     PageRequest pageRequest = PageRequest.of(curPage - 1, pageSize);
-    if(Strings.isBlank(keyword))  {
-      return noticeRepository.findAll(pageRequest);
-    }else {
-      return noticeRepository.findByTitleContains(keyword, pageRequest);
-    }
 
-
+    return noticeRepository.getNotices(keyword, pageRequest);
     // 페이징 처리가 된 객체는 List가 아니라 Page로 반환이 됨
   }
 

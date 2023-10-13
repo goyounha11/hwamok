@@ -61,7 +61,7 @@ public class NoticeController {
   @GetMapping("/delete-notice/{id}")
   public String deleteNotice(@PathVariable Long id) {
     noticeService.deleteNotice(id);
-    return "noticeWrite";
+    return "notice";
   }
 
   // 숙제로 수정 삭제

@@ -1,12 +1,10 @@
 <html lang="ko" layout:decorate="layout/basic" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <!--  Body Wrapper -->
 <div class="container-fluid" layout:fragment="content">
-    <nav class="navbar navbar-light bg-light">
-        <form class="form-inline" action="/notice" method="get">
-            <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </nav>
+    <input class="form-control mr-sm-2" id="search" name="keyword" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" id="searchBtn" type="button">Search</button>
+    <a href="/notice/write" class="btn btn-outline-success my-2 my-sm-0" id="writeBtn" th:if="${session.user != null}">Add</a>
+
     <table class="table">
         <thead>
         <tr>
@@ -55,25 +53,31 @@
 <script>
 
     $(document).ready(function () {
-        search();
+        search(1);
+
+        $("#searchBtn").click(function () {
+            search(1);
+        });
     });
 
 
     function search(curPage) {
+        let keyword = $("#search").val();
+
         $.ajax({
             type: "GET",
-            url: "/notices",
+            url: `/notices?curPage=${curPage}&keyword=${keyword}`,
             success: function (response) {
                 console.log(response);
                 let html = '';
                 response.content.forEach(notice => {
                     html += "<tr>";
                     html += `<td>${notice.id}</td>`;
-                    html += `<td>${notice.title}</td>`;
+                    html += `<td><a href="/notice/${notice.id}">${notice.title}</a></td>`;
                     html += `<td>${notice.userId}</td>`;
                     html += "</tr>";
                 });
-                $("#list").append(html);
+                $("#list").empty().append(html);
                 $("#pageNav").paging({
                     pageSize: response.numberOfElements,
                     currentPage: curPage, //내가 클릭한 숫자,
@@ -89,6 +93,7 @@
     function goPage(curPage) {
         search(curPage);
     }
+
 </script>
 <!--
     동기 방식

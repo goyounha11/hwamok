@@ -1,20 +1,26 @@
 <html lang="ko" layout:decorate="layout/basic" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <!--  Body Wrapper -->
     <div class="container-fluid" layout:fragment="content" th:object="${notice}">
+        <button type="button" class="btn btn-primary m-1" id="backBtn">Back</button>
         <form action="/change-notice" method="post">
-            <input type="hidden" th:field="*{id}" class="form-control" id="id">
+            <input type="hidden" th:field="*{id}" class="form-control" id="id" th:disabled="${session.user == null} or ${notice.userId != session.user.id}">
             <div class="form-group">
                 <label for="title">제목</label>
-                <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="name@example.com">
+                <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="name@example.com" th:disabled="${session.user == null} or ${notice.userId != session.user.id}">
             </div>
             <div class="form-group">
                 <label for="exampleFormControlTextarea1">본문</label>
-                <textarea class="form-control" th:field="*{content}" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea class="form-control" th:field="*{content}" id="exampleFormControlTextarea1" rows="3" th:disabled="${session.user == null} or ${notice.userId != session.user.id}"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary m-1">저장</button>
+            <button type="submit" class="btn btn-primary m-1" th:if="${session.user != null} and ${notice.userId == session.user.id}">저장</button>
+            <a th:href="@{/delete-notice/{id}(id = *{id})}" class="btn btn-primary m-1" th:if="${session.user != null} and ${notice.userId == session.user.id}">삭제</a>
         </form>
     </div>
 </html>
 <script>
-    console.log("gdf");
+    $(document).ready(function () {
+        $("#backBtn").click(function() {
+            history.back();
+        });
+    });
 </script>
