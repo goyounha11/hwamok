@@ -35,7 +35,7 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
     // and ==> and
     // or ==> or
 
-    //querydsl, jpa = N + 1문제
+    //querydsl, jpa = N + 1 문제
 
     booleanBuilder.and(eqKeyword(keyword));
 
